@@ -1,52 +1,52 @@
 import os
 import requests
+from flask import Flask, render_template
 from dotenv import load_dotenv
 
 load_dotenv()
 
-CLIENT_ID = os.getenv("BLIZZARD_CLIENT_ID")
-CLIENT_SECRET = os.getenv("BLIZZARD_CLIENT_SECRET")
+app = Flask(__name__)
 
 def get_access_token():
-    url = "https://oauth.battle.net/token"
-    response = requests.post(
-        url,
-        data={"grant_type": "client_credentials"},
-        auth=(CLIENT_ID, CLIENT_SECRET)
-    )
-    response.raise_for_status()
-    return response.json()["access_token"]
+  client_id = os.getenv("BLIZZARD_CLIENT_ID")
+  client_secret = os.getenv("BLIZZARD_CLIENT_SECRET")
+  region = os.getenv("BLIZZARD_REGION")
 
-def get_eu_realms():
-    token = get_access_token()
-    url = "https://eu.api.blizzard.com/data/wow/realm/index?namespace=dynamic-eu&locale=fr_FR&access_token=" + token
-    response = requests.get(url)
-    response.raise_for_status()
-    data = response.json()
-    # retourne un dictionnaire {nom: slug}
-    return {r['name'].lower(): r['slug'] for r in data['realms']}
+  url = f"https://{region}.battle.net/oauth/token"
+  response = requests.post(
+    url,
+    auth=(client_id, client_secret),
+    data={"grant_type": "client_credentials"}
+  )
+  response.raise_for_status()
+  return response.json()["access_token"]
 
-def get_character_profile(realm_name, character_name):
-    token = get_access_token()
-    
-    # vérifier le slug du royaume
-    realms = get_eu_realms()
-    realm_slug = realms.get(realm_name.lower())
-    if not realm_slug:
-        raise ValueError(f"Realm '{realm_name}' non trouvé. Vérifie le nom exact.")
-    
-    url = f"https://eu.api.blizzard.com/profile/wow/character/{realm_slug}/{character_name.lower()}?namespace=profile-eu&locale=fr_FR&access_token={token}"
-    response = requests.get(url)
-    response.raise_for_status()
-    return response.json()
+def get_character(realm, name):
+  token = get_access_token()
+  region = os.getenv("BLIZZARD_REGION")
 
+  url = f"https://{region}.api.blizzard.com/profile/wow/character/{realm.lower()}/{name.lower()}"
+  headers = {
+    "Authorization": f"Bearer {token}",
+    "Battlenet-Namespace": f"profile-{region}"
+  }
+  params = {"locale": "fr_FR"}
+
+  response = requests.get(url, headers=headers, params=params)
+  response.raise_for_status()
+  return response.json()
+
+@app.route("/")
+def index():
+  return render_template("index.html")
+
+@app.route("/character/<realm>/<name>")
+def character(realm, name):
+  try:
+    data = get_character(realm, name)
+    return render_template("character.html", character=data)
+  except Exception as e:
+    return f"Erreur : {str(e)}"
+  
 if __name__ == "__main__":
-    realm_name = "Dalaran"
-    character_name = "Crypoune"
-
-    data = get_character_profile(realm_name, character_name)
-    
-    print(f"Name: {data.get('name')}")
-    print(f"Level: {data.get('level')}")
-    print(f"Race: {data.get('race', {}).get('name')}")
-    print(f"Class: {data.get('character_class', {}).get('name')}")
+  app.run(debug=True)
