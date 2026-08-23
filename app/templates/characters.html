@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>WoW Character List</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+
+  <body>
+    <h1>Mes personnages WoW</h1>
+    <p>{{ characters|length }} personnages trouvés.</p>
+    <!--
+    	Conteneur de tous les personnages.
+
+    	Chaque personnage sera affiché sous forme
+    	d'une petite carte compacte.
+	-->
+    <div class="characters-grid">
+      {% for character in characters %}
+
+      <article
+        class="character-card {% if character.level == 90 %}level-max{% else %}level-progress{% endif %}"
+      >
+        <!--
+            Zone gauche :
+            - portrait du personnage
+            - niveau
+            - faction
+        -->
+        <div class="character-visual">
+          <!--
+        	Pour le moment, on utilise un simple bloc
+            comme emplacement du portrait.
+
+            Nous ajouterons les vraies images ensuite.
+    	    -->
+          <div class="character-portrait">
+            {% if character.avatar_url %}
+            <img
+              src="{{ character.avatar_url }}"
+              alt="Portrait de {{ character.name }}"
+            />
+            {% else %} Portrait {% endif %}
+          </div>
+
+          <!-- Les deux petits cercles -->
+          <div class="character-badges">
+            <!-- Niveau -->
+            <div class="character-badge level-badge">{{ character.level }}</div>
+
+            <!--
+				Le logo affiché dépend de la faction du personnage.
+			-->
+            <div class="character-badge faction-badge">
+              {% if character.faction.type == "ALLIANCE" %}
+              <img
+                src="{{ url_for('static', filename='images/alliance.png') }}"
+                alt="Alliance"
+              />
+              {% else %}
+              <img
+                src="{{ url_for('static', filename='images/horde.png') }}"
+                alt="Horde"
+              />
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!--
+            Zone droite :
+            nom + serveur
+            classe
+            race
+        -->
+        <div class="character-info">
+          <!-- Nom + serveur -->
+          <h2>
+            {{ character.name }},
+            <span>{{ character.realm.name }}</span>
+          </h2>
+
+          <!--
+    			Classe du personnage.
+
+    			On ajoute une classe CSS dynamique basée sur
+    			l'identifiant Blizzard de la classe.
+			-->
+          <p class="character-class class-{{ character.playable_class.id }}">
+            {{ character.playable_class.name }}
+          </p>
+
+          <!-- Race -->
+          <p>{{ character.playable_race.name }}</p>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </body>
+</html>
