@@ -1,0 +1,337 @@
+/* =========================================================
+   GLOBAL
+   ========================================================= */
+
+/*
+ * On utilise box-sizing: border-box pour que les dimensions
+ * des éléments soient plus faciles à contrôler.
+ */
+* {
+  box-sizing: border-box;
+}
+
+/*
+ * Style général de la page.
+ */
+body {
+  margin: 0;
+  padding: 40px;
+
+  font-family: Arial, sans-serif;
+
+  background-color: #11151b;
+  color: #f5f5f5;
+}
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+h1 {
+  margin-bottom: 10px;
+}
+
+body > p {
+  margin-bottom: 30px;
+}
+
+/* =========================================================
+   CHARACTERS GRID
+   ========================================================= */
+
+/*
+ * On utilise deux colonnes sur les grands écrans.
+ *
+ * Chaque personnage est donc une petite carte horizontale,
+ * comme dans ton exemple.
+ */
+.characters-grid {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 12px;
+}
+
+/* =========================================================
+   CHARACTER CARD
+   ========================================================= */
+
+/*
+ * Une carte représente un personnage.
+ */
+.character-card {
+  display: flex;
+
+  min-height: 100px;
+
+  background-color: #202630;
+
+  border: 1px solid #303946;
+  border-radius: 8px;
+
+  overflow: hidden;
+}
+
+/* =========================================================
+   CHARACTER LEVEL STATUS
+   ========================================================= */
+
+/*
+ * Personnage dont le niveau est inférieur au niveau maximum.
+ *
+ * On utilise une couleur discrète : le personnage est encore
+ * en progression, mais il ne doit pas attirer autant l'œil
+ * qu'un personnage max level.
+ */
+.character-card.level-progress {
+  border-color: #46566a;
+}
+
+/*
+ * Personnage au niveau maximum.
+ *
+ * Le contour doré permet de l'identifier immédiatement.
+ */
+.character-card.level-max {
+  border: 2px solid #d4af37;
+}
+
+/* =========================================================
+   CHARACTER VISUAL
+   ========================================================= */
+
+/*
+ * Partie gauche de la carte :
+ *
+ * ┌────────────┐ ┌───┐
+ * │            │ │   │
+ * │  portrait  │ │ 80│
+ * │            │ │ H │
+ * └────────────┘ └───┘
+ */
+.character-visual {
+  display: flex;
+  align-items: center;
+
+  padding: 8px;
+
+  gap: 8px;
+}
+
+/* =========================================================
+   PORTRAIT
+   ========================================================= */
+
+.character-portrait {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100px;
+  height: 84px;
+
+  background-color: #11151b;
+
+  border-radius: 6px;
+
+  color: #666;
+  font-size: 12px;
+}
+
+/*
+ * Le portrait occupe toute la zone prévue.
+ */
+.character-portrait img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+}
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+
+.character-badges {
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+}
+
+/*
+ * Style commun aux deux petits cercles.
+ */
+.character-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+
+  border-radius: 50%;
+
+  background-color: #303b4c;
+
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/*
+ * Badge du niveau.
+ */
+.level-badge {
+  color: #ffffff;
+}
+
+/*
+ * Logo Alliance / Horde dans le badge.
+ */
+.faction-badge img {
+  width: 36px;
+  height: 36px;
+
+  object-fit: contain;
+
+  display: block;
+}
+
+/* =========================================================
+   CHARACTER INFO
+   ========================================================= */
+
+.character-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 10px 14px;
+}
+
+/*
+ * Nom du personnage + royaume.
+ */
+.character-info h2 {
+  margin: 0 0 6px;
+
+  font-size: 17px;
+}
+
+/*
+ * Le royaume est légèrement moins important
+ * visuellement que le nom.
+ */
+.character-info h2 span {
+  font-weight: normal;
+
+  color: #aeb5c0;
+}
+
+/*
+ * Classe et race.
+ */
+.character-info p {
+  margin: 2px 0;
+
+  font-size: 14px;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+/*
+ * Sur les écrans plus petits, une seule colonne.
+ */
+@media (max-width: 900px) {
+  .characters-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/*
+ * Sur téléphone, on réduit légèrement le portrait.
+ */
+@media (max-width: 500px) {
+  body {
+    padding: 20px;
+  }
+}
+
+/* =========================================================
+   WORLD OF WARCRAFT CLASS COLORS
+   ========================================================= */
+
+/*
+ * Les identifiants correspondent aux IDs de classes
+ * fournis par l'API Blizzard.
+ */
+
+/* Warrior */
+.class-1 {
+  color: #c79c6e;
+}
+
+/* Paladin */
+.class-2 {
+  color: #f58cba;
+}
+
+/* Hunter */
+.class-3 {
+  color: #abd473;
+}
+
+/* Rogue */
+.class-4 {
+  color: #fff569;
+}
+
+/* Priest */
+.class-5 {
+  color: #ffffff;
+}
+
+/* Death Knight */
+.class-6 {
+  color: #c41f3b;
+}
+
+/* Shaman */
+.class-7 {
+  color: #0070de;
+}
+
+/* Mage */
+.class-8 {
+  color: #69ccf0;
+}
+
+/* Warlock */
+.class-9 {
+  color: #9482c9;
+}
+
+/* Monk */
+.class-10 {
+  color: #00ff96;
+}
+
+/* Druid */
+.class-11 {
+  color: #ff7d0a;
+}
+
+/* Demon Hunter */
+.class-12 {
+  color: #a330c9;
+}
+
+/* Evoker */
+.class-13 {
+  color: #33937f;
+}
